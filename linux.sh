@@ -9,7 +9,19 @@ echo Paste your Access token here:
 read token
 echo ""
 
-ssh_key=$(cat ~/.ssh/id_rsa.pub)
+RSA_KEY=~/.ssh/id_rsa.pub
+ED25519_KEY=~/.ssh/id_ed25519.pub
+
+ssh_key=""
+
+if [ -f $RSA_KEY ]; then
+    ssh_key=$(cat $RSA_KEY)
+elif [ -f $ED25519_KEY ]; then
+    ssh_key=$(cat $ED25519_KEY)
+else
+    echo "No public key found."
+    exit
+fi
 
 curl -H "Authorization: token $token" \
     --data "{\"title\": \"$title\", \"key\": \"$ssh_key\"}" \
